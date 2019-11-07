@@ -16,12 +16,17 @@ body {
   width: 500px;
 }
 
+.gifImage {
+  position: absolute;
+  width: 500px;
+  height: 600px;
+}
 .correct {
   position: absolute;
   background-image: url('/assets/images/correct.gif');
   width: 500px;
   height: 600px;
-  opacity: 0;
+  opacity: 1;
 }
 
 .incorrect {
@@ -29,5 +34,5 @@ body {
   background-image:url('/assets/images/incorrect.gif');
   width: 500px;
   height: 600px;
-  opacity: 0;
+  opacity: 1;
 }

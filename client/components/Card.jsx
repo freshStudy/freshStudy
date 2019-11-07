@@ -4,30 +4,56 @@ import {useSpring, useTrail, animated, interpolate} from 'react-spring';
 
 
 export default ({ question, correctAns, wrongAnswers, attemptAnswer }) => {
-  // randomize answers
-  const allAnswers = wrongAnswers.concat(correctAns);
-  const indices = Object.keys(allAnswers).sort(() => Math.random() - 0.5);
 
-  // concat question + randomized answers for react-spring mapping
-  const cardTextArr = [question, correctAns, ...wrongAnswers];
+  ////////////////////////////////////////////////
+  // run once when component is first initialized
+  useEffect(() => {
+    // declare 'animationEvent' trigger
+    const [ animationEvent, setAnimationEvent ] = useState('enterLeft');
 
-  // create a spring for each question + answers
-  const [ trail, setTrail, stopTrail ] = useTrail(indices.length, () => ({ xy: [-200, 100], o: 0}));
+    // save answerStatus (true/false) to send to parent component when spring exit animation concludes
+    // make this const outside of func?
+    const [ answerStatus, setAnswerStatus ] = useState(false);
 
-  // declare 'animationEvent' trigger
-  const [ animationEvent, setAnimationEvent ] = useState('enterLeft');
+    // save state of reaction gif for the next question gifCurtain close animation
+    const [ showGif, setShowGif ] = useState('correct');
 
-  // save answerStatus (true/false) to send to parent component when spring exit animation concludes
-  // make this const outside of func?
-  const [ answerStatus, setAnswerStatus ] = useState(false);
+    // fade in/out 'gifCurtain' to reveal animation 
+    const [ curtainSpring, setCurtainSpring] = useSpring(() => ({opacity: 0}));
+
+    const handleAttempt = answer => {
+      //console.log(`In handleAttempt with answer: ${answer}. Correct is: ${correctAns}`);
+      setAnswerStatus(answer === correctAns);
+      if (answer !== correctAns) {
+        setAnimationEvent('exitDown');
+      } else {
+        setAnimationEvent('exitUp');
+      }
+    }
+  }, []);
+
+  /////////////////////////////////
+  // run when new questions passed
+  useEffect(() => {
+    // randomize answers
+    const allAnswers = wrongAnswers.concat(correctAns);
+    const indices = Object.keys(allAnswers).sort(() => Math.random() - 0.5);
+
+    // concat question + randomized answers for react-spring mapping
+    const cardTextArr = [question, correctAns, ...wrongAnswers];
+
+    // create a spring for each question + answers
+    const [ trail, setTrail, stopTrail ] = useTrail(indices.length, () => ({ xy: [-200, 100], o: 0}));
+
+  }, [question, correctAns, wrongAnswers, attemptAnswer]);
 
 
-  // save state of gifCurtain for the next question transition
-  const [ showGif, setShowGif ] = useState('none');
+  
+  
 
-  // fade in/out 'gifCurtain' to reveal animation 
-  const [ springProps, setSpringProps] = useSpring(() => ({opacity: 0}));
 
+
+  //////////////////////////////////////////////
   // 'restSpringCounter' and 'onRestSpring' allow us to wait until the last spring-enabled animated element
   // has exited the game screen. Then we notify the parent component of user's answer status.
   let restSpringCounter;
@@ -38,63 +64,58 @@ export default ({ question, correctAns, wrongAnswers, attemptAnswer }) => {
     }
   }
 
-
-
-
-  // an onClick handler that evaluates user's answer, stores the true/false result, and sets the 
-  // corresponding animationEvent string.
-  const handleAttempt = answer => {
-    //console.log(`In handleAttempt with answer: ${answer}. Correct is: ${correctAns}`);
-    setAnswerStatus(answer === correctAns);
-    if (answer !== correctAns) {
-      setAnimationEvent('exitDown');
-    } else {
-      setAnimationEvent('exitUp');
-    }
-  }
-
-  // only updates when 'animationEvent' state is set. Currently, 'handleAttempt' sets this based on user pass/fail answer.
+  //////////////////////////////////////////////
+  // run when new 'animationEvent' state is set
   useEffect(() => {
     switch (animationEvent) {
       case 'enterLeft':
+        console.log("TCL: answerStatus", answerStatus)
         setTrail({to: {xy: [20, 100], o: 1}});
-        setSpringProps({from: {opacity: 0}, to: {opacity: 1}});
+        setCurtainSpring({from: {opacity: 0}, to: {opacity: 1}});
         break;
       case 'exitUp':
         restSpringCounter = cardTextArr.length - 1;
         setShowGif('correct');
         setTrail({to: {xy: [20, -200], o: 0}, onRest: onRestSpring});
-        setSpringProps({from: {opacity: 1}, to: {opacity: 0}});
+        setCurtainSpring({from: {opacity: 1}, to: {opacity: 0}});
         break;
       case 'exitDown':
         restSpringCounter = cardTextArr.length - 1;
         setShowGif('incorrect');
         setTrail({to: {xy: [20, 400], o: 0}, onRest: onRestSpring});
-        setSpringProps({from: {opacity: 1}, to: {opacity: 0}});
+        setCurtainSpring({from: {opacity: 1}, to: {opacity: 0}});
         break;
       default:
         console.log(`animationEvent '${animationEvent}' not recognized`);
-    }}, [animationEvent]);
+  }}, [animationEvent]);
   
+////////////////////////////////
+// run when 'showGif' is updated
+useEffect(() => {
+  document.getElementById('reactionGif').className = showGif;
+  console.log("TCL: showGif", showGif)
+  /*
+  switch (showGif) {
+    case 'incorrect':
+      document.getElementsByClassName('incorrect')[0].style.opacity = 1;
+      document.getElementsByClassName('correct')[0].style.opacity = 0;
+      break;
+    case 'correct':
+      document.getElementsByClassName('correct')[0].style.opacity = 1;
+      document.getElementsByClassName('incorrect')[0].style.opacity = 0;
+      break;
+    case 'none':
+    
+      break;
+    default:
+      console.log(`useEffect received unknown showGif state of '${showGif}'`);
+      
+  }*/}, [showGif]);
 
-    useEffect(() => {
-      switch (showGif) {
-        case 'incorrect':
-          document.getElementsByClassName('incorrect')[0].style.opacity = 1;
-          document.getElementsByClassName('correct')[0].style.opacity = 0;
-          break;
-        case 'correct':
-          document.getElementsByClassName('correct')[0].style.opacity = 1;
-          document.getElementsByClassName('incorrect')[0].style.opacity = 0;
-          break;
-        case 'none':
-          document.getElementsByClassName('correct')[0].style.opacity = 0;
-          document.getElementsByClassName('incorrect')[0].style.opacity = 0;
-          break;
-        default:
-          console.log(`useEffect received unknown showGif state of '${showGif}'`);
-      }}, [showGif]);
 
+
+  //////////////////////////////////////////////
+  // render time!
   return (
     <div style={{   width: '500px',
                     height: '600px',
@@ -103,16 +124,14 @@ export default ({ question, correctAns, wrongAnswers, attemptAnswer }) => {
                     overflow: 'hidden'
                 }}>
 
-    <div className="correct"></div>
-    <div className="incorrect"></div>
-    <animated.div className="gifCurtain" style={springProps}>hello</animated.div>
+    <div id="reactionGif" className={'correct'}></div>
+    <animated.div className="gifCurtain" style={curtainSpring}>hello</animated.div>
 
 
     {trail.map(({ xy, o }, i) => (
     <animated.div   key={cardTextArr[i]} 
                     onClick={(i > 0 ?  () => handleAttempt(cardTextArr[i]) : undefined)}
-                    style={{ 
-                            
+                    style={{   
                             cursor: (i > 0 ? 'pointer' : 'default'),
                             marginBottom: (i > 0 ? '10px' : '20px'),
                             fontSize: (i > 0 ? '18px' : '24px'),
