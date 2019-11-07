@@ -91,7 +91,13 @@ export default ({ question, correctAns, wrongAnswers, attemptAnswer, answerHisto
   ///////
   // run when 'showGif' is updated
   useEffect(() => {
-      document.getElementById('reactionGif').className = showGif;
+    const reactionTextDiv = 
+    if (showGif == 'correct') {
+
+    } else {
+
+    }
+    document.getElementById('reactionGif').className = showGif;
   }, [showGif]);
 
 
