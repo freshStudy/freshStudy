@@ -1,5 +1,6 @@
 const messageTypes = { };
 
-messageTypes.ANSWER = 'answer';
+messageTypes.ANSWER = 'answerQuestion';
+messageTypes.START = 'startGame';
 
 export default messageTypes;
