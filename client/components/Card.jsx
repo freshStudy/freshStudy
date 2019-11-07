@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import {useSpring, useTrail, animated, interpolate} from 'react-spring';
 
-
+const correctReactionTextArr = ['THIS PLEASES ME', 'I HAVE TAUGHT YOU WELL', 'YOU HAVE A BRIGHT FUTURE'];
+const incorrectReactionTextArr = ['SNUGGLE HARDER', 'DISAPPOINTED', 'THERE IS NO TRY'];
 
 export default ({ question, correctAns, wrongAnswers, attemptAnswer, answerHistory }) => {
   console.log('top of Card')
@@ -15,8 +16,12 @@ export default ({ question, correctAns, wrongAnswers, attemptAnswer, answerHisto
   // concat question + randomized answers for react-spring mapping
   const cardTextArr = [question].concat(indices.map(i => allAnswers[i]));
 
-   
-
+  let gifImageClassName = 'gifImage';
+  if (answerHistory.length > 0) {
+    // pick up where we left off from the previous question correct/incorrect transition
+    const previousAnswerResult = answerHistory[answerHistory.length - 1];
+    gifImageClassName = previousAnswerResult ? 'correct' : 'incorrect';
+  }
 
   ///////////////////
   // HOOKS: useState
@@ -27,7 +32,6 @@ export default ({ question, correctAns, wrongAnswers, attemptAnswer, answerHisto
   // make this const outside of func?
   const [ answerStatus, setAnswerStatus ] = useState(false);
   // save state of reaction gif for the next question gifCurtain close animation
-  const [ showGif, setShowGif ] = useState('gifImage');
 
 
   /////////////////////////////
@@ -36,7 +40,7 @@ export default ({ question, correctAns, wrongAnswers, attemptAnswer, answerHisto
   // fade in/out 'gifCurtain' to reveal animation 
   const [ curtainSpring, setCurtainSpring] = useSpring(() => ({opacity: 0}));
   // create a spring for each question + answers
-  const [ trail, setTrail, stopTrail ] = useTrail(indices.length, () => ({ xy: [-200, 100], o: 0}));
+  const [ trail, setTrail, stopTrail ] = useTrail(indices.length + 1, () => ({ xy: [-200, 100], o: 0}));
 
 
 
@@ -65,21 +69,32 @@ export default ({ question, correctAns, wrongAnswers, attemptAnswer, answerHisto
   /////
   // run when new 'animationEvent' state is set
   useEffect(() => {
+    let randomIndex;
+
     switch (animationEvent) {
       case 'enterLeft':
-        //console.log("TCL: answerStatus", answerStatus)
+        document.getElementById('reactionGif').className = gifImageClassName;
         setTrail({to: {xy: [20, 100], o: 1}});
         setCurtainSpring({from: {opacity: 0}, to: {opacity: 1}});
         break;
       case 'exitUp':
         restSpringCounter = cardTextArr.length - 1;
-        setShowGif('correct');
+        document.getElementById('reactionGif').className = 'correct';
+
+        randomIndex = Math.floor(Math.random() * Math.floor(correctReactionTextArr.length - 1));
+        document.getElementById('reactionText').innerHTML = correctReactionTextArr[randomIndex];
+
+
         setTrail({to: {xy: [20, -200], o: 0}, onRest: onRestSpring});
         setCurtainSpring({from: {opacity: 1}, to: {opacity: 0}});
         break;
       case 'exitDown':
         restSpringCounter = cardTextArr.length - 1;
-        setShowGif('incorrect');
+        document.getElementById('reactionGif').className = 'incorrect';
+       
+        randomIndex = Math.floor(Math.random() * Math.floor(incorrectReactionTextArr.length - 1));
+        document.getElementById('reactionText').innerHTML = incorrectReactionTextArr[randomIndex];
+
         setTrail({to: {xy: [20, 400], o: 0}, onRest: onRestSpring});
         setCurtainSpring({from: {opacity: 1}, to: {opacity: 0}});
         break;
@@ -88,17 +103,6 @@ export default ({ question, correctAns, wrongAnswers, attemptAnswer, answerHisto
     }
     
   }, [animationEvent]);
-  ///////
-  // run when 'showGif' is updated
-  useEffect(() => {
-    const reactionTextDiv = 
-    if (showGif == 'correct') {
-
-    } else {
-
-    }
-    document.getElementById('reactionGif').className = showGif;
-  }, [showGif]);
 
 
 
@@ -106,30 +110,32 @@ export default ({ question, correctAns, wrongAnswers, attemptAnswer, answerHisto
   // RENDER TIME!
   ///////////////
   return (
-    <div style={{   width: '500px',
-                    height: '600px',
-                    backgroundColor: '#0ff',
-                    margin: 'auto',
-                    overflow: 'hidden'
-                }}>
+    <div className="card-container" style={{   width: '500px',
+                                    height: '600px',
+                                    margin: 'auto',
+                                    overflow: 'hidden'
+                                }}>
 
     <div id="reactionGif"></div>
-    <div id="reactionText" className="card-reaction-text"></div>
+    <span id="reactionText" className="card-reaction-text"></span>
   
-    <animated.div className="gifCurtain" style={curtainSpring}>hello</animated.div>
+    <animated.div className="gifCurtain" style={curtainSpring}></animated.div>
 
 
     {trail.map(({ xy, o }, i) => (
-    <animated.div   key={cardTextArr[i]} 
-                    onClick={(i > 0 ?  () => handleAttempt(cardTextArr[i]) : undefined)}
+    <animated.div   className={'card-question-text'}
+                    key={cardTextArr[i]} 
+                    onClick={(i > 0 ?  () => handleAttempt(cardTextArr[i]) : null)}
                     style={{   
                             cursor: (i > 0 ? 'pointer' : 'default'),
                             marginBottom: (i > 0 ? '10px' : '20px'),
-                            fontSize: (i > 0 ? '18px' : '24px'),
+                            fontSize: (i > 0 ? '22px' : '30px'),
                             transform: xy.interpolate((x, y) => `translate3d(${x}px, ${y}px, 0)`),
                             opacity: o.interpolate(o => o),
                             overflowWrap: 'break-word',
-                            width: '90%'
+                        
+                            fontFamily:  `'Archivo Narrow', sans-serif`,
+                            
                             }}>
     {(i > 0 ? `${i}. ` : '')}{cardTextArr[i]}                           
     </animated.div>))}
