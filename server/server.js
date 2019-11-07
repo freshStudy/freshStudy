@@ -9,6 +9,22 @@ const cookieParser = require('cookie-parser');
 const authController = require('./controllers/authController');
 const databaseController = require('./controllers/databaseController');
 
+io.on('connection', socket => {
+  console.log('user connected');
+  socket.on('startGame', () => {
+    socket.join('game');
+    console.log('user joined game room');
+  });
+  socket.on('answerQuestion', data => {
+    if (data.payload) socket.broadcast.emit('answer', 'OTHER PLAYER RIGHT');
+    else socket.broadcast.emit('answer', 'OTHER PLAYER WRONG');
+    console.log(data);
+  });
+  socket.on('disconnect', () => {
+    console.log('user disconnected');
+  });
+});
+
 app.use(bodyParser.json());
 app.use(cookieParser());
 // get questions request 
@@ -52,17 +68,6 @@ app.delete('/logout', authController.deleteSession, (req, res) => {
 app.get('/', (req, res) => {
     return res.sendFile(path.resolve(__dirname, '../client/index.html'));
 });
-
-io.on('connection', socket => {
-    console.log('user connected');
-    socket.on('answer', data => {
-        if (data.payload) socket.broadcast.emit('answer', 'OTHER PLAYER RIGHT');
-        else socket.broadcast.emit('answer', 'OTHER PLAYER WRONG');
-        console.log(data);
-    });
-});
-
-app.use('/build', express.static(path.join(__dirname, '../build')));
 
 app.use('*', (req, res, next) => {
     res.status(404).send('File is not found, Route is wrong')

@@ -1,44 +1,53 @@
 import React, { useState, useEffect } from 'react';
 import {useSpring, useTrail, animated, interpolate} from 'react-spring';
 
+const correctReactionTextArr = ['THIS PLEASES ME', 'I HAVE TAUGHT YOU WELL', 'YOU HAVE A BRIGHT FUTURE'];
+const incorrectReactionTextArr = ['SNUGGLE HARDER', 'DISAPPOINTED', 'THERE IS NO TRY'];
 
+export default ({ question, correctAns, wrongAnswers, attemptAnswer, answerHistory }) => {
+  console.log('top of Card')
 
-export default ({ question, correctAns, wrongAnswers, attemptAnswer }) => {
+  ///////////////////////////////////
+  // CONST: format question + answers
+  ///////////////////////////////////
   // randomize answers
   const allAnswers = wrongAnswers.concat(correctAns);
   const indices = Object.keys(allAnswers).sort(() => Math.random() - 0.5);
-
   // concat question + randomized answers for react-spring mapping
   const cardTextArr = [question].concat(indices.map(i => allAnswers[i]));
 
-  // create a spring for each question + answers
-  const [ trail, setTrail, stopTrail ] = useTrail(indices.length + 1, () => ({ xy: [-200, 100], o: 0}));
+  let gifImageClassName = 'gifImage';
+  if (answerHistory.length > 0) {
+    // pick up where we left off from the previous question correct/incorrect transition
+    const previousAnswerResult = answerHistory[answerHistory.length - 1];
+    gifImageClassName = previousAnswerResult ? 'correct' : 'incorrect';
+  }
 
+  ///////////////////
+  // HOOKS: useState
+  ///////////////////
   // declare 'animationEvent' trigger
   const [ animationEvent, setAnimationEvent ] = useState('enterLeft');
-
   // save answerStatus (true/false) to send to parent component when spring exit animation concludes
   // make this const outside of func?
   const [ answerStatus, setAnswerStatus ] = useState(false);
+  // save state of reaction gif for the next question gifCurtain close animation
 
-  // save state of gifCurtain for the next question transition
-  const [ showGif, setShowGif ] = useState('none');
 
+  /////////////////////////////
+  // HOOKS: useSpring, useTrail
+  /////////////////////////////
   // fade in/out 'gifCurtain' to reveal animation 
-  const [ springProps, setSpringProps] = useSpring(() => ({opacity: 0}));
+  const [ curtainSpring, setCurtainSpring] = useSpring(() => ({opacity: 0}));
+  // create a spring for each question + answers
+  const [ trail, setTrail, stopTrail ] = useTrail(indices.length + 1, () => ({ xy: [-200, 100], o: 0}));
 
-  // 'restSpringCounter' and 'onRestSpring' allow us to wait until the last spring-enabled animated element
-  // has exited the game screen. Then we notify the parent component of user's answer status.
-  let restSpringCounter;
-  const onRestSpring = () => {
-    if (--restSpringCounter === 0) {
-      console.log(`in onRestSpring. isAnswerCorrect = ${answerStatus}`)
-      return attemptAnswer(answerStatus); 
-    }
-  }
 
-  // an onClick handler that evaluates user's answer, stores the true/false result, and sets the 
-  // corresponding animationEvent string.
+
+  //////////////////////
+  // EVENT HANDLERS
+  /////////////////////
+  // onclick handler
   const handleAttempt = answer => {
     //console.log(`In handleAttempt with answer: ${answer}. Correct is: ${correctAns}`);
     setAnswerStatus(answer === correctAns);
@@ -48,78 +57,88 @@ export default ({ question, correctAns, wrongAnswers, attemptAnswer }) => {
       setAnimationEvent('exitUp');
     }
   }
-
-  // only updates when 'animationEvent' state is set. Currently, 'handleAttempt' sets this based on user pass/fail answer.
+  /////
+  // 'restSpringCounter' and 'onRestSpring' allow us to wait until the last spring-enabled animated element
+  // has exited the game screen. Then we notify the parent component of user's answer status.
+  let restSpringCounter;
+  const onRestSpring = () => {
+    if (--restSpringCounter === 0) {
+      return attemptAnswer(answerStatus); 
+    }
+  }
+  /////
+  // run when new 'animationEvent' state is set
   useEffect(() => {
+    let randomIndex;
+
     switch (animationEvent) {
       case 'enterLeft':
+        document.getElementById('reactionGif').className = gifImageClassName;
         setTrail({to: {xy: [20, 100], o: 1}});
-        setSpringProps({from: {opacity: 0}, to: {opacity: 1}});
+        setCurtainSpring({from: {opacity: 0}, to: {opacity: 1}});
         break;
       case 'exitUp':
         restSpringCounter = cardTextArr.length - 1;
-        setShowGif('correct');
+        document.getElementById('reactionGif').className = 'correct';
+
+        randomIndex = Math.floor(Math.random() * Math.floor(correctReactionTextArr.length - 1));
+        document.getElementById('reactionText').innerHTML = correctReactionTextArr[randomIndex];
+
+
         setTrail({to: {xy: [20, -200], o: 0}, onRest: onRestSpring});
-        setSpringProps({from: {opacity: 1}, to: {opacity: 0}});
+        setCurtainSpring({from: {opacity: 1}, to: {opacity: 0}});
         break;
       case 'exitDown':
         restSpringCounter = cardTextArr.length - 1;
-        setShowGif('incorrect');
+        document.getElementById('reactionGif').className = 'incorrect';
+       
+        randomIndex = Math.floor(Math.random() * Math.floor(incorrectReactionTextArr.length - 1));
+        document.getElementById('reactionText').innerHTML = incorrectReactionTextArr[randomIndex];
+
         setTrail({to: {xy: [20, 400], o: 0}, onRest: onRestSpring});
-        setSpringProps({from: {opacity: 1}, to: {opacity: 0}});
+        setCurtainSpring({from: {opacity: 1}, to: {opacity: 0}});
         break;
       default:
         console.log(`animationEvent '${animationEvent}' not recognized`);
-    }}, [animationEvent]);
-  
+    }
+    
+  }, [animationEvent]);
 
-    useEffect(() => {
-      switch (showGif) {
-        case 'incorrect':
-          document.getElementsByClassName('incorrect')[0].style.opacity = 1;
-          document.getElementsByClassName('correct')[0].style.opacity = 0;
-          break;
-        case 'correct':
-          document.getElementsByClassName('correct')[0].style.opacity = 1;
-          document.getElementsByClassName('incorrect')[0].style.opacity = 0;
-          break;
-        case 'none':
-          document.getElementsByClassName('correct')[0].style.opacity = 0;
-          document.getElementsByClassName('incorrect')[0].style.opacity = 0;
-          break;
-        default:
-          console.log(`useEffect received unknown showGif state of '${showGif}'`);
-      }}, [showGif]);
 
+
+  ///////////////
+  // RENDER TIME!
+  ///////////////
   return (
-    <div style={{   width: '500px',
-                    height: '600px',
-                    backgroundColor: '#0ff',
-                    margin: 'auto',
-                    overflow: 'hidden'
-                }}>
+    <div className="card-container" style={{   width: '500px',
+                                    height: '600px',
+                                    margin: 'auto',
+                                    overflow: 'hidden'
+                                }}>
 
-    <div className="correct"></div>
-    <div className="incorrect"></div>
-    <animated.div className="gifCurtain" style={springProps}>hello</animated.div>
+    <div id="reactionGif"></div>
+    <span id="reactionText" className="card-reaction-text"></span>
+  
+    <animated.div className="gifCurtain" style={curtainSpring}></animated.div>
 
 
     {trail.map(({ xy, o }, i) => (
-    <animated.div   key={cardTextArr[i]} 
-                    onClick={(i > 0 ?  () => handleAttempt(cardTextArr[i]) : undefined)}
-                    style={{ 
-                            
+    <animated.div   className={'card-question-text'}
+                    key={cardTextArr[i]} 
+                    onClick={(i > 0 ?  () => handleAttempt(cardTextArr[i]) : null)}
+                    style={{   
                             cursor: (i > 0 ? 'pointer' : 'default'),
                             marginBottom: (i > 0 ? '10px' : '20px'),
-                            fontSize: (i > 0 ? '18px' : '24px'),
+                            fontSize: (i > 0 ? '22px' : '30px'),
                             transform: xy.interpolate((x, y) => `translate3d(${x}px, ${y}px, 0)`),
                             opacity: o.interpolate(o => o),
                             overflowWrap: 'break-word',
-                            width: '90%'
+                        
+                            fontFamily:  `'Archivo Narrow', sans-serif`,
+                            
                             }}>
     {(i > 0 ? `${i}. ` : '')}{cardTextArr[i]}                           
     </animated.div>))}
     </div>
   );
-
 }
