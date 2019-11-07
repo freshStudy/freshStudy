@@ -1,7 +1,16 @@
 const path = require('path');
+const webpack = require('webpack');
 
 module.exports = {
   entry: './client/index.js',
+  // plugins: [
+  //   new webpack.DefinePlugin({
+  //     'process.env': {
+  //       'OAUTH_CLIENT_ID': '"711651127971-t90e5r7504tvdgf2mh17bp7a9a46dnff.apps.googleusercontent.com"',
+  //       'OAUTH_CLIENT_SECRET': '"WzLT55w81lYs4v9hvVZWCru8"'
+  //     }
+  //   })
+  // ],
   output: {
     path: path.resolve(__dirname, 'build'),
     publicPath: '/',

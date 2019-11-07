@@ -28,7 +28,7 @@ app.post('/register', authController.createUser, authController.setCookie, authC
 
 // send back game history
 app.post('/login', authController.verifyUser, authController.setCookie, authController.setSession, (req, res) => {
-    if(res.locals.isValidUser) {
+    if (res.locals.isValidUser) {
         res.status(200).json(res.locals.userData)
     } else {
         res.status(201).json(res.locals.userData);
@@ -39,6 +39,40 @@ app.get('/verify', authController.verifySession, (req, res) => {
     res.json(res.locals.verifyUser);
 });
 
+app.get('/oauthcallback', handleOAuth2);
+async function handleOAuth2(req, res) {
+    const tokenResponse = await fetch(
+        `https://www.googleapis.com/oauth2/v4/token`,
+        {
+            method: 'POST',
+            body: JSON.stringify({
+                code: req.query.code,
+                client_id: process.env.OAUTH_CLIENT_ID,
+                client_secret: process.env.OAUTH_CLIENT_SECRET,
+                redirect_uri: 'http://localhost:3000/oauthcallback',
+                grant_type: 'authorization_code'
+            })
+        }
+    )
+    const tokenJson = await tokenResponse.json()
+    const userInfo = await getUserInfo(tokenJson.access_token)
+
+    res.redirect(`http://localhost:3000?${Object.keys(userInfo).map(key => `${key}=${encodeURIComponent(userInfo[key])}`).join('&')}`)
+}
+
+async function getUserInfo(accessToken) {
+    const response = await fetch(
+        `https://www.googleapis.com/oauth2/v1/userinfo?access_token=${accessToken}`,
+        {
+            headers: {
+                Authorization: `Bearer ${accessToken}`
+            }
+        }
+    )
+    const json = await response.json()
+    return json
+}
+
 app.delete('/logout', authController.deleteSession, (req, res) => {
     res.json('Delete successful')
 });
@@ -48,12 +82,12 @@ app.get('/', (req, res) => {
 });
 
 io.on('connection', socket => {
-  console.log('user connected');
-  socket.on('answer', data => {
-    if (data.payload) socket.broadcast.emit('answer', 'OTHER PLAYER RIGHT');
-    else socket.broadcast.emit('answer', 'OTHER PLAYER WRONG');
-    console.log(data);
-  });
+    console.log('user connected');
+    socket.on('answer', data => {
+        if (data.payload) socket.broadcast.emit('answer', 'OTHER PLAYER RIGHT');
+        else socket.broadcast.emit('answer', 'OTHER PLAYER WRONG');
+        console.log(data);
+    });
 });
 
 app.use('*', (req, res, next) => {
