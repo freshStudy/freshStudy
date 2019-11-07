@@ -10,6 +10,7 @@ export default ({
   attemptAnswer,
   startNewGame,
 }) => {
+ 
   let wrongAnswers;
   if (!isGameOver) {
     wrongAnswers = [cards[activeCardIndex].ans_one];
