@@ -2,7 +2,7 @@ import * as types from '../constants/gameActionTypes';
 import messageTypes from '../constants/messageTypes';
 import emitAction from '../services/socket.service';
 
-export const startNewGame = () => dispatch => {
+export const startNewGame = () => dispatch => { 
   fetch('/questions')
     .then(res => res.json())
     .then(data => dispatch({
@@ -25,3 +25,7 @@ export const attemptAnswer = emitAction(isCorrect => ({
   type: types.ATTEMPT_ANSWER,
   payload: isCorrect,
 }));
+
+export const returnToMainMenu = () => ({
+  type: types.RETURN_TO_MAIN_MENU
+})
