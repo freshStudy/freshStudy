@@ -8,19 +8,50 @@ body {
   background-color: $primary-background-color;
 }
 
+.card-container {
+  box-shadow: 5px 5px 5px rgb(52, 52, 52);
+}
+
+.card-question-text {
+  width: 90%;
+}
+.card-question-text:hover {
+  color: rgb(255, 255, 255);
+  background-color: rgb(31, 31, 31);
+}
+
+.card-reaction-text {
+  position: absolute;
+  width: 500px;
+  font-size: 64px;
+  line-height: 58px;
+  font-weight: bold;
+  color: white;
+  overflow-wrap: break-word;
+  text-align: center;
+  margin-top: 400px;
+  text-shadow: 1px 1px 4px black; 
+  opacity: 0.9;
+}
+
 .gifCurtain {
   position: absolute;
-  background-color: orange;
+  background-color: rgb(255, 255, 255);
   height: 600px;
   width: 500px;
 }
 
+.gifImage {
+  position: absolute;
+  width: 500px;
+  height: 600px;
+}
 .correct {
   position: absolute;
   background-image: url('/assets/images/correct.gif');
   width: 500px;
   height: 600px;
-  opacity: 0;
+  opacity: 1;
 }
 
 .incorrect {
@@ -28,10 +59,11 @@ body {
   background-image:url('/assets/images/incorrect.gif');
   width: 500px;
   height: 600px;
-  opacity: 0;
+  opacity: 1;
 }
+
 .gameScreen{
-  background:#070117;
+  background:#e4e4e4;
   width: 105%;
   height: 105%;
 }
@@ -58,7 +90,7 @@ body {
 }
 
 .container{
-  background: cornsilk ;
+  background: rgb(205, 205, 205) ;
   // color: $primary-background-color;
 }
 

@@ -10,7 +10,9 @@ export default ({
   attemptAnswer,
   startNewGame,
   isLoggedIn,
+  answerHistory,
 }) => {
+ 
   let wrongAnswers;
   if (!isGameOver) {
     wrongAnswers = [cards[activeCardIndex].ans_one];
@@ -33,6 +35,7 @@ export default ({
             correctAns={cards[activeCardIndex].ans_correct}
             wrongAnswers={wrongAnswers}
             attemptAnswer={attemptAnswer}
+            answerHistory={answerHistory}
           />
         )}
       <p>You have answered {numCorrectAnswers} {numCorrectAnswers === 1 ? 'question' : 'questions'} correctly.</p>
