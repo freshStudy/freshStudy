@@ -108,6 +108,7 @@ export default ({ question, correctAns, wrongAnswers, attemptAnswer }) => {
                 }}>
 
     <div id="reactionGif"></div>
+    <div id="reactionText" className="card-reaction-text"></div>
   
     <animated.div className="gifCurtain" style={curtainSpring}>hello</animated.div>
 

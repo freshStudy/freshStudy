@@ -8,6 +8,14 @@ body {
   background-color: $primary-background-color;
 }
 
+.card-reaction-text {
+  position: absolute;
+  font-size: 32px;
+  color: white;
+  margin-bottom: 50px;
+  align-content: center;
+}
+
 .gifCurtain {
   position: absolute;
   background-color: orange;
