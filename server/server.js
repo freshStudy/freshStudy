@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const app = express();
 const http = require('http').createServer(app);
@@ -33,9 +34,14 @@ app.get('/questions', databaseController.getQuestions, (req, res) => {
 });
 
 // post answers request
-// app.post('/results', databaseController.insertResults, (req, res) => {
+app.post('/results', databaseController.insertResults, databaseController.getResults, (req, res) => {
+    res.json(res.locals.history);
+});
 
-// });
+app.get('/results', databaseController.getResults, (req, res) => {
+    res.json(res.locals.history);
+});
+
 app.use('/assets/images', express.static(path.resolve(__dirname, '../client/assets/images')));
 
 app.post('/register', authController.createUser, authController.setCookie, authController.setSession, (req, res) => {
@@ -64,6 +70,8 @@ app.get('/oauthcallback', authController.handleOAuth2, authController.setCookie,
 app.delete('/logout', authController.deleteSession, (req, res) => {
     res.json('Delete successful')
 });
+
+app.use('/build', express.static(path.resolve(__dirname, '../build')));
 
 app.get('/', (req, res) => {
     return res.sendFile(path.resolve(__dirname, '../client/index.html'));
