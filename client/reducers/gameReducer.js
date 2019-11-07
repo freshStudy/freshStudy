@@ -12,7 +12,6 @@ const initialState = {
 export default (state = initialState, action) => {
   switch (action.type) {
     case types.START_NEW_GAME:
-      console.log('starting new game')
       return {
         isPlaying: true,
         isPaused: false,
@@ -39,7 +38,6 @@ export default (state = initialState, action) => {
       if (action.payload === true) newState.numCorrectAnswers += 1;
       return newState;
     case types.RETURN_TO_MAIN_MENU:
-      console.log('in return main menu')
       return {
         ...state,
         isPlaying: false,
