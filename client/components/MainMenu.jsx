@@ -22,7 +22,7 @@ export default ({
         params={{
           "particles": {
             "number": {
-              "value": 100,
+              "value": 180,
               "density": {
                 "enable": true
               }
@@ -81,7 +81,9 @@ export default ({
                 />
               </>
           )}
-          {isLoggedIn && `Welcome ${user.username}!`}
+          <div className="welcome">
+            {isLoggedIn && `Welcome ${user.username}!`}
+          </div>
         </div>
       </div>
     </div>
