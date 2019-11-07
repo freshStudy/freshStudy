@@ -8,7 +8,7 @@ socket.on('answer', msg => {
   console.log(msg);
 });
 
-const emitAction = action => {
+export const emitAction = action => {
   return (...args) => {
     const result = action.call(this, ...args);
     console.log(result);
@@ -17,4 +17,6 @@ const emitAction = action => {
   };
 };
 
-export default emitAction;
+export const emit = (key, ...args) => {
+  if (socket) socket.emit(key, ...args);
+}

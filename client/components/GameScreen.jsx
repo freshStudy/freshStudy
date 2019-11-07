@@ -10,7 +10,9 @@ export default ({
   attemptAnswer,
   startNewGame,
   isLoggedIn,
+  answerHistory,
 }) => {
+ 
   let wrongAnswers;
   if (!isGameOver) {
     wrongAnswers = [cards[activeCardIndex].ans_one];
@@ -25,17 +27,18 @@ export default ({
 
       {(isGameOver
         ? (<>
-          <p>Game over!</p>
-          <NewGamePrompt startNewGame={startNewGame} isLoggedIn={isLoggedIn} />
-        </>)
-        : <Card
-          key={cards[activeCardIndex].id}
-          question={cards[activeCardIndex].question}
-          correctAns={cards[activeCardIndex].ans_correct}
-          wrongAnswers={wrongAnswers}
-          attemptAnswer={attemptAnswer}
-        />
-      )}
+            <p>Game over!</p>
+            <NewGamePrompt startNewGame={startNewGame} isLoggedIn={isLoggedIn} />
+          </>)
+          : <Card
+            key={cards[activeCardIndex].id}
+            question={cards[activeCardIndex].question}
+            correctAns={cards[activeCardIndex].ans_correct}
+            wrongAnswers={wrongAnswers}
+            attemptAnswer={attemptAnswer}
+            answerHistory={answerHistory}
+          />
+        )}
       <p>You have answered {numCorrectAnswers} {numCorrectAnswers === 1 ? 'question' : 'questions'} correctly.</p>
     </div>
   );

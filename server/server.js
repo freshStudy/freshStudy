@@ -9,6 +9,22 @@ const cookieParser = require('cookie-parser');
 const authController = require('./controllers/authController');
 const databaseController = require('./controllers/databaseController');
 
+io.on('connection', socket => {
+  console.log('user connected');
+  socket.on('startGame', () => {
+    socket.join('game');
+    console.log('user joined game room');
+  });
+  socket.on('answerQuestion', data => {
+    if (data.payload) socket.broadcast.emit('answer', 'OTHER PLAYER RIGHT');
+    else socket.broadcast.emit('answer', 'OTHER PLAYER WRONG');
+    console.log(data);
+  });
+  socket.on('disconnect', () => {
+    console.log('user disconnected');
+  });
+});
+
 app.use(bodyParser.json());
 app.use(cookieParser());
 // get questions request 
@@ -30,7 +46,7 @@ app.post('/register', authController.createUser, authController.setCookie, authC
 
 // send back game history
 app.post('/login', authController.verifyUser, authController.setCookie, authController.setSession, (req, res) => {
-    if(res.locals.isValidUser) {
+    if (res.locals.isValidUser) {
         res.status(200).json(res.locals.userData)
     } else {
         res.status(201).json(res.locals.userData);
@@ -41,21 +57,16 @@ app.get('/verify', authController.verifySession, (req, res) => {
     res.json(res.locals.verifyUser);
 });
 
+app.get('/oauthcallback', authController.handleOAuth2, authController.setCookie, authController.setSession, (req, res) => {
+    res.redirect('http://localhost:3000').json(res.locals.userData);
+});
+
 app.delete('/logout', authController.deleteSession, (req, res) => {
     res.json('Delete successful')
 });
 
 app.get('/', (req, res) => {
     return res.sendFile(path.resolve(__dirname, '../client/index.html'));
-});
-
-io.on('connection', socket => {
-  console.log('user connected');
-  socket.on('answer', data => {
-    if (data.payload) socket.broadcast.emit('answer', 'OTHER PLAYER RIGHT');
-    else socket.broadcast.emit('answer', 'OTHER PLAYER WRONG');
-    console.log(data);
-  });
 });
 
 app.use('*', (req, res, next) => {

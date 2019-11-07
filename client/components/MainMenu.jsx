@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import Login from './Login';
 import Signup from './Signup';
+import Oauth from './Oauth';
 import NewGamePrompt from './NewGamePrompt';
 import Particles from 'react-particles-js';
 
@@ -63,14 +64,22 @@ export default ({
         />
         <div>
           {!isLoggedIn && (viewToggle
-            ? <Login
-              login={login}
-              handleToggle={handleToggle}
-            />
-            : <Signup
-              register={register}
-              handleToggle={handleToggle}
-            />
+            ? <>
+                <Login
+                  login={login}
+                  handleToggle={handleToggle}
+                />
+                <Oauth
+                />
+              </>
+            : <>
+                <Signup
+                  register={register}
+                  handleToggle={handleToggle}
+                />
+                <Oauth
+                />
+              </>
           )}
           <div className="welcome">
             {isLoggedIn && `Welcome ${user.username}!`}

@@ -5,7 +5,7 @@ const initialState = {
   isPlaying: false,
   isPaused: false,
   activeCardIndex: 0,
-  numCorrectAnswers: 0,
+  answerHistory: [],
   cards: [],
 };
 
@@ -17,6 +17,7 @@ export default (state = initialState, action) => {
         isPaused: false,
         activeCardIndex: 0,
         numCorrectAnswers: 0,
+        answerHistory: [],
         cards: action.payload,
       };
     case types.PAUSE_GAME:
@@ -36,7 +37,13 @@ export default (state = initialState, action) => {
       newState.activeCardIndex += 1;
       if (newState.activeCardIndex >= newState.cards.length) newState.isGameOver = true;
       if (action.payload === true) newState.numCorrectAnswers += 1;
+      newState.answerHistory.push(action.payload);
       return newState;
+    case types.RETURN_TO_MAIN_MENU:
+      return {
+        ...state,
+        isPlaying: false,
+      }
     default:
       return state;
   }

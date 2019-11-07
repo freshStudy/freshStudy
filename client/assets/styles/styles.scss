@@ -1,6 +1,9 @@
 $font-stack: Helvetica, sans-serif;
-$primary-color: #333;
-$primary-background-color: #180548;
+$primary-color: rgb(178, 255, 255);
+$primary-background-color: rgb(88, 0, 88);
+$primary-alternate-color: rgb(233, 192, 233);
+$shadow-color: rgb(205, 205, 205);
+$box-text-color: rgb(52, 52, 52);
 
 body {
   font: 100% $font-stack;
@@ -8,19 +11,56 @@ body {
   background-color: $primary-background-color;
 }
 
+.card-container {
+  box-shadow: 5px 5px 5px $shadow-color;
+}
+
+.card-question-text {
+  width: 90%;
+  color: $box-text-color;
+}
+
+.card-answer-text {
+  width: 90%;
+  color: $box-text-color;
+}
+.card-answer-text:hover {
+  color: rgb(255, 255, 255);
+  background-color: rgb(31, 31, 31);
+}
+
+.card-reaction-text {
+  position: absolute;
+  width: 500px;
+  font-size: 64px;
+  line-height: 58px;
+  font-weight: bold;
+  color: white;
+  overflow-wrap: break-word;
+  text-align: center;
+  margin-top: 400px;
+  text-shadow: 1px 1px 4px black; 
+  opacity: 0.9;
+}
+
 .gifCurtain {
   position: absolute;
-  background-color: orange;
+  background-color: rgb(255, 255, 255);
   height: 600px;
   width: 500px;
 }
 
+.gifImage {
+  position: absolute;
+  width: 500px;
+  height: 600px;
+}
 .correct {
   position: absolute;
   background-image: url('/assets/images/correct.gif');
   width: 500px;
   height: 600px;
-  opacity: 0;
+  opacity: 1;
 }
 
 .incorrect {
@@ -28,11 +68,11 @@ body {
   background-image:url('/assets/images/incorrect.gif');
   width: 500px;
   height: 600px;
-  opacity: 0;
+  opacity: 1;
 }
 
 .gameScreen{
-  background:#070117;
+  background:#e4e4e4;
   width: 105%;
   height: 105%;
 }
@@ -59,8 +99,7 @@ body {
 }
 
 .container{
-  background: $primary-background-color ;
-  // color: $primary-background-color;
+  background: $primary-background-color;
 }
 
 .playAsGuest{
@@ -77,7 +116,7 @@ height: 50px;
 width: 1380px;
 display: flex;
 justify-content: center;
-color: greenyellow;
+color: $primary-color;
 font-size: 30px;
 padding-top: 25px;
 }
@@ -86,7 +125,7 @@ div#navbar{
 }
 
 button.playAsGuestNavBar{
-  background: cornsilk;
+  background: $primary-alternate-color;
   margin-left: 60px;
   margin-bottom: 60px;
   width: 220px;
@@ -100,7 +139,7 @@ button.playAsGuestNavBar{
   display: flex;
   align-items: flex-end;
   justify-content: center;
-  color:greenyellow;
+  color:$primary-color;
   font-size: 16px;
   margin-top: 10px;
 
@@ -108,7 +147,7 @@ button.playAsGuestNavBar{
 
 .playingAsGuestonGamePage{
   background: $primary-background-color;
-  color: greenyellow;
+  color: $primary-color;
 }
 .isGameOver {
   position: absolute;
@@ -123,13 +162,13 @@ button.playAsGuestNavBar{
   align-items: center;
   align-content: center;
   height: 300px;
-  color: cornsilk;
+  color: $primary-alternate-color;
 }
 
 .login-form{
   display: flex;
   flex-direction: row;
-  color: cornsilk;
+  color: $primary-alternate-color;
   margin-left: 30px
 }
 
@@ -141,7 +180,7 @@ button.playAsGuestNavBar{
 }
 
 .userNameLabel{
-  color:cornsilk;
+  color:$primary-alternate-color;
 }
 
 .loginUserName{
@@ -168,20 +207,20 @@ height: 20px;
   margin-left: 200px;
   width: 300px;
   height: 40px;
-  background: cornsilk;
+  background: $primary-alternate-color;
 }
 
 #register.login-form{
   padding: 20px;
   flex: grid;
-  color: cornsilk;
+  color: $primary-alternate-color;
 }
 .emailInput{
   margin-right: 30px;
   margin-top: 5px;
   width: 200px;
   height: 20px;
-  background: cornsilk;
+  background: $primary-alternate-color;
 }
 
 .passwordInput{
@@ -189,7 +228,7 @@ height: 20px;
   margin-top: 5px;
   width: 200px;
   height: 20px;
-  background: cornsilk;
+  background: $primary-alternate-color;
 
 }
 
@@ -198,7 +237,7 @@ height: 20px;
   margin-top: 5px;
   width: 200px;
   height: 20px;
-  background: cornsilk;
+  background: $primary-alternate-color;
 }
 
 .loginBtn{
@@ -206,7 +245,7 @@ height: 20px;
   margin-top: 25px;
   width: 150px;
   height: 28px;
-  background: cornsilk;
+  background: $primary-alternate-color;
 }
 .loginHere{
   margin: 40px 100px 0px 370px;
@@ -214,7 +253,7 @@ height: 20px;
   height: 40px;
   font-size: 10px;
   color: $primary-background-color;
-  background: cornsilk;
+  background: $primary-alternate-color;
 }
 
 .registerBtn{
@@ -222,10 +261,10 @@ height: 20px;
   margin-top: 20px;
   width: 140px;
   height: 30px;
-  background: cornsilk;
+  background: $primary-alternate-color;
 }
 
 .welcome{
-  color: cornsilk;
+  color: $primary-alternate-color;
   margin-left: 40px;
 }
