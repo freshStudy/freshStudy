@@ -64,10 +64,14 @@ export default ({
           />
         <div>
           {!isLoggedIn && (viewToggle
-            ? <Login
-                login={login}
-                handleToggle={handleToggle}
-              />
+            ? <>
+                <Login
+                  login={login}
+                  handleToggle={handleToggle}
+                />
+                <Oauth
+                />
+              </>
             : <>
                 <Signup
                   register={register}

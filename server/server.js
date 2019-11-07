@@ -1,4 +1,5 @@
-const app = require('express')();
+const express = require('express');
+const app = express();
 const http = require('http').createServer(app);
 const io = require('socket.io')(http);
 const path = require('path');
@@ -39,39 +40,9 @@ app.get('/verify', authController.verifySession, (req, res) => {
     res.json(res.locals.verifyUser);
 });
 
-app.get('/oauthcallback', handleOAuth2);
-async function handleOAuth2(req, res) {
-    const tokenResponse = await fetch(
-        `https://www.googleapis.com/oauth2/v4/token`,
-        {
-            method: 'POST',
-            body: JSON.stringify({
-                code: req.query.code,
-                client_id: process.env.OAUTH_CLIENT_ID,
-                client_secret: process.env.OAUTH_CLIENT_SECRET,
-                redirect_uri: 'http://localhost:3000/oauthcallback',
-                grant_type: 'authorization_code'
-            })
-        }
-    )
-    const tokenJson = await tokenResponse.json()
-    const userInfo = await getUserInfo(tokenJson.access_token)
-
-    res.redirect(`http://localhost:3000?${Object.keys(userInfo).map(key => `${key}=${encodeURIComponent(userInfo[key])}`).join('&')}`)
-}
-
-async function getUserInfo(accessToken) {
-    const response = await fetch(
-        `https://www.googleapis.com/oauth2/v1/userinfo?access_token=${accessToken}`,
-        {
-            headers: {
-                Authorization: `Bearer ${accessToken}`
-            }
-        }
-    )
-    const json = await response.json()
-    return json
-}
+app.get('/oauthcallback', authController.handleOAuth2, authController.setCookie, authController.setSession, (req, res) => {
+    res.redirect('http://localhost:3000').json(res.locals.userData);
+});
 
 app.delete('/logout', authController.deleteSession, (req, res) => {
     res.json('Delete successful')
@@ -89,6 +60,8 @@ io.on('connection', socket => {
         console.log(data);
     });
 });
+
+app.use('/build', express.static(path.join(__dirname, '../build')));
 
 app.use('*', (req, res, next) => {
     res.status(404).send('File is not found, Route is wrong')
