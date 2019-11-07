@@ -5,6 +5,7 @@ import GameScreen from '../components/GameScreen';
 
 const mapStateToProps = ({ game }) => ({
   activeCardIndex: game.activeCardIndex,
+  answerHistory: game.answerHistory,
   cards: game.cards,
   isGameOver: game.isGameOver,
   numCorrectAnswers: game.numCorrectAnswers,

@@ -3,7 +3,7 @@ import {useSpring, useTrail, animated, interpolate} from 'react-spring';
 
 
 
-export default ({ question, correctAns, wrongAnswers, attemptAnswer }) => {
+export default ({ question, correctAns, wrongAnswers, attemptAnswer, answerHistory }) => {
   console.log('top of Card')
 
   ///////////////////////////////////
