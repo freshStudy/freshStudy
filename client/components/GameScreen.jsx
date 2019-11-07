@@ -9,6 +9,7 @@ export default ({
   numCorrectAnswers,
   attemptAnswer,
   startNewGame,
+  isLoggedIn,
 }) => {
  
   let wrongAnswers;
@@ -19,19 +20,23 @@ export default ({
       if (cards[activeCardIndex].ans_three) wrongAnswers.push(cards[activeCardIndex].ans_three);
     }
   }
+
   return (
     <div>
       {(isGameOver
-        ? (<><p>Game over!</p><NewGamePrompt startNewGame={startNewGame} /></>)
-        : <Card
+        ? (<>
+            <p>Game over!</p>
+            <NewGamePrompt startNewGame={startNewGame} isLoggedIn={isLoggedIn} />
+          </>)
+          : <Card
             key={cards[activeCardIndex].id}
             question={cards[activeCardIndex].question}
             correctAns={cards[activeCardIndex].ans_correct}
             wrongAnswers={wrongAnswers}
             attemptAnswer={attemptAnswer}
           />
-      )}
-      <p>You have answered {numCorrectAnswers} questions correctly.</p>
+        )}
+      <p>You have answered {numCorrectAnswers} {numCorrectAnswers === 1 ? 'question' : 'questions'} correctly.</p>
     </div>
   );
 };

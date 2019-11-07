@@ -13,7 +13,7 @@ export default ({ question, correctAns, wrongAnswers, attemptAnswer }) => {
   const allAnswers = wrongAnswers.concat(correctAns);
   const indices = Object.keys(allAnswers).sort(() => Math.random() - 0.5);
   // concat question + randomized answers for react-spring mapping
-  const cardTextArr = [question, correctAns, ...wrongAnswers];
+  const cardTextArr = [question].concat(indices.map(i => allAnswers[i]));
 
    
 
@@ -28,7 +28,6 @@ export default ({ question, correctAns, wrongAnswers, attemptAnswer }) => {
   const [ answerStatus, setAnswerStatus ] = useState(false);
   // save state of reaction gif for the next question gifCurtain close animation
   const [ showGif, setShowGif ] = useState('gifImage');
-
 
 
   /////////////////////////////
