@@ -40,7 +40,7 @@ export default ({
             answerHistory={answerHistory}
           />
         )}
-      <p>You have answered {numCorrectAnswers} {numCorrectAnswers === 1 ? 'question' : 'questions'} correctly.</p>
+      <p className="gamescreen-score-text">You have answered {numCorrectAnswers} {numCorrectAnswers === 1 ? 'question' : 'questions'} correctly.</p>
     </div>
   );
 };

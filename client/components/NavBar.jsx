@@ -4,6 +4,7 @@ export default ({ user, isLoggedIn, logout, isPlaying, pause, returnToMainMenu }
   return (
     <div id="navbar">
       <div id="navbar-title">Fresh Study</div>
+      <div className="navbar-login-container">
       {isPlaying && isLoggedIn
         && (
           <>
@@ -22,6 +23,7 @@ export default ({ user, isLoggedIn, logout, isPlaying, pause, returnToMainMenu }
         && (
           <button onClick={() => {logout(true); returnToMainMenu(); }}>Log Out</button>
         )}
+        </div>
     </div>
   )
 }

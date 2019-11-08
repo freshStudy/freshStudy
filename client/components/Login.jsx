@@ -12,21 +12,24 @@ export default ({
     if (username && password) login(username, password);
   };
   return (
-
-    <div className="Login">
+    <>
       <div>
-        <form className="login-form" onSubmit={handleSubmit}>
-          <label className="userNameLabel">Username
-          <input className="loginUserName" type="text" value={username} onChange={(e) => setUsername(e.target.value)} required />
+        <form onSubmit={handleSubmit}>
+          <label>Username
+          <input type="text" value={username} onChange={(e) => setUsername(e.target.value)} required />
           </label>
-          <label className="passwordLabel">Password
-          <input className="loginPassword" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+          <label>Password
+          <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
           </label>
-          <input type="submit" className="loginBtn" value="Login" />
+          <button type="submit">Login</button>
         </form>
-        <button className="createAccountBtn" type="button" onClick={handleToggle}>Create Account Here!</button>
       </div>
-    </div>
-
+      <div style={{ marginTop: '40px',
+                    width: '100%',
+                    textAlign: 'center'
+                    }}>Don't have an account?
+        <button type="button" onClick={handleToggle}>Create Account Here!</button>
+      </div>
+      </>
   );
 };
