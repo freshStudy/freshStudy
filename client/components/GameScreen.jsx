@@ -6,11 +6,14 @@ export default ({
   activeCardIndex,
   cards,
   isGameOver,
-  numCorrectAnswers,
   attemptAnswer,
   startNewGame,
   isLoggedIn,
+  answerHistory,
 }) => {
+  const numCorrectAnswers = answerHistory.reduce((acc, cur) => {
+    return acc + cur
+  }, 0);
   let wrongAnswers;
   if (!isGameOver) {
     wrongAnswers = [cards[activeCardIndex].ans_one];
@@ -21,7 +24,8 @@ export default ({
   }
 
   return (
-    <div>
+    <div className="gamePage">
+
       {(isGameOver
         ? (<>
             <p>Game over!</p>
@@ -33,9 +37,10 @@ export default ({
             correctAns={cards[activeCardIndex].ans_correct}
             wrongAnswers={wrongAnswers}
             attemptAnswer={attemptAnswer}
+            answerHistory={answerHistory}
           />
         )}
-      <p>You have answered {numCorrectAnswers} {numCorrectAnswers === 1 ? 'question' : 'questions'} correctly.</p>
+      <p className="gamescreen-score-text">You have answered {numCorrectAnswers} {numCorrectAnswers === 1 ? 'question' : 'questions'} correctly.</p>
     </div>
   );
 };

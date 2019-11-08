@@ -21,6 +21,7 @@ const mapDispatchToProps = dispatch => ({
   verify: () => dispatch(actions.verify()),
   pause: () => dispatch(actions.pauseGame()),
   resume: () => dispatch(actions.resumeGame()),
+  returnToMainMenu: () => dispatch(actions.returnToMainMenu()),
 });
 
 const MainContainer = ({
@@ -36,6 +37,7 @@ const MainContainer = ({
   verify,
   pause,
   resume,
+  returnToMainMenu,
 }) => {
   useEffect(() => {
     verify();
@@ -49,6 +51,7 @@ const MainContainer = ({
         isPlaying={isPlaying}
         logout={logout}
         pause={pause}
+        returnToMainMenu={returnToMainMenu}
       />
       {isLoading && 'Loading...'}
       {!isLoading && (

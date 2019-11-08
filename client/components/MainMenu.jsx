@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import Login from './Login';
 import Signup from './Signup';
+import Oauth from './Oauth';
 import NewGamePrompt from './NewGamePrompt';
 import Particles from 'react-particles-js';
+import StatsContainer from '../containers/StatsContainer';
 
 export default ({
   startNewGame,
@@ -55,25 +57,31 @@ export default ({
         }}
       />
       <div className="login_page">
-          <NewGamePrompt
-            startNewGame={startNewGame}
-            isLoggedIn={isLoggedIn}
-            resume={resume}
-            isPaused={isPaused}
-          />
-        <div>
+        <NewGamePrompt
+          startNewGame={startNewGame}
+          isLoggedIn={isLoggedIn}
+          resume={resume}
+          isPaused={isPaused}
+        />
+        <div className="main-menu-forms-containers">
           {!isLoggedIn && (viewToggle
-            ? <Login
-              login={login}
-              handleToggle={handleToggle}
-            />
-            : <Signup
-              register={register}
-              handleToggle={handleToggle}
-            />
+            ? <>
+                <Login
+                  login={login}
+                  handleToggle={handleToggle}/>
+              </>
+            : <>
+                <div className="login-user-form">
+                <Signup
+                  register={register}
+                  handleToggle={handleToggle} />
+                <Oauth />
+                </div>
+              </>
           )}
           <div className="welcome">
             {isLoggedIn && `Welcome ${user.username}!`}
+            <StatsContainer />
           </div>
         </div>
       </div>
