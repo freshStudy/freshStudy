@@ -81,8 +81,10 @@ export default ({
           )}
           <div className="welcome">
             {isLoggedIn && `Welcome ${user.username}!`}
-            <StatsContainer />
           </div>
+          <div className="stats-container">
+            <StatsContainer />
+        </div>
         </div>
       </div>
     </div>
