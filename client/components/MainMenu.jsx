@@ -18,6 +18,7 @@ export default ({
   const [viewToggle, setViewToggle] = useState(true);
   const handleToggle = () => setViewToggle(status => !status);
   return (
+    <>
     <div className="landing_page">
       <Particles
         params={{
@@ -81,10 +82,13 @@ export default ({
           )}
           <div className="welcome">
             {isLoggedIn && `Welcome ${user.username}!`}
-            <StatsContainer />
           </div>
         </div>
       </div>
     </div>
+    <div className="stats-container">
+        <StatsContainer />
+    </div>
+    </>
   )
 };

@@ -12,7 +12,6 @@ body {
 }
 
 
-
 .gamescreen-score-text {
   font-family: 'Baloo Bhai';
   font-size: 24px;
@@ -230,6 +229,18 @@ client > components > Login.jsx
   justify-self: end;
   }
 
+.stats-container {
+  position: absolute;
+  border: 1px red solid;
+  width: 30vw;
+  background-color: rgba(233, 192, 233, 0.5);
+  padding: 10px;
+  font-family: 'Baloo Bhai';
+  font-size: 22px;
+  color: $primary-background-color;
+  margin: 1000px 300px 200px 0px;
+}
+
 
 
 
@@ -269,6 +280,8 @@ client > components > Login.jsx
   padding: 20px;
   flex: grid;
   color: $primary-alternate-color;
+  grid-row: 1fr 1fr 1fr;
+
 }
 .emailInput{
   margin-right: 30px;
@@ -281,7 +294,7 @@ client > components > Login.jsx
 .passwordInput{
   margin-right: 20px;
   margin-top: 5px;
-  width: 200px;
+  width: 100px;
   height: 20px;
   background: $primary-alternate-color;
 
@@ -290,7 +303,7 @@ client > components > Login.jsx
 .userNameInput{
   margin-right: 15px;
   margin-top: 5px;
-  width: 200px;
+  width: 100px;
   height: 20px;
   background: $primary-alternate-color;
 }
@@ -303,7 +316,7 @@ client > components > Login.jsx
   background: $primary-alternate-color;
 }
 .loginHere{
-  margin: 40px 100px 0px 370px;
+  margin: 40px 100px 0px 0px;
   width: 300px;
   height: 40px;
   font-size: 10px;
