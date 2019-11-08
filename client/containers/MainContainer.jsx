@@ -4,7 +4,6 @@ import * as actions from '../actions';
 import GameContainer from './GameContainer';
 import NavBar from '../components/NavBar';
 import MainMenu from '../components/MainMenu';
-import StatsContainer from './StatsContainer';
 
 const mapStateToProps = ({ game, user }) => ({
   isPlaying: game.isPlaying,
