@@ -46,6 +46,7 @@ export default (state = initialState, action) => {
       };
     case types.ATTEMPT_ANSWER:
       const newState = { ...state };
+      newState.answerHistory = [...newState.answerHistory];
       newState.activeCardIndex += 1;
       if (newState.activeCardIndex >= newState.cards.length) newState.isGameOver = true;
       newState.answerHistory.push(action.payload);
@@ -56,7 +57,6 @@ export default (state = initialState, action) => {
         isPlaying: false,
       }
     case types.UPDATE_HISTORY:
-      console.log('here');
       return {
         ...state,
         allHistory: action.payload,

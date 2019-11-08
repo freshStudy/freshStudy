@@ -4,8 +4,9 @@ import * as actions from '../actions';
 import Leaderboard from '../components/Leaderboard';
 import LiveFeed from '../components/LiveFeed';
 
-const mapStateToProps = ({ game }) => ({
+const mapStateToProps = ({ game, feed }) => ({
   allHistory: game.allHistory,
+  feed: feed.history,
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -14,6 +15,7 @@ const mapDispatchToProps = dispatch => ({
 
 const StatsContainer = ({
   allHistory,
+  feed,
   getHistory,
 }) => {
   useEffect(() => {
@@ -21,8 +23,8 @@ const StatsContainer = ({
   }, []);
   return (
     <div id="stats">
-      <Leaderboard allHistory={allHistory} />
-      <LiveFeed />
+      {/* <Leaderboard allHistory={allHistory} /> */}
+      <LiveFeed feed={feed}/>
     </div>
   );
 };

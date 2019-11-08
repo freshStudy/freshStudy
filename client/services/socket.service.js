@@ -1,12 +1,13 @@
 import io from 'socket.io-client';
-import * as actions from '../actions';
+import * as actions from '../actions/feedActions';
+import store from '../store';
 
 const socket = io('ws://localhost:3000',
   { transports: ['websocket'] }
 );
 
 socket.on('answer', msg => {
-  console.log(msg);
+  store.dispatch(actions.updateFeed(msg));
 });
 
 export const emitAction = action => {

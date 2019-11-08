@@ -17,7 +17,7 @@ const mapDispatchToProps = dispatch => ({
 
 const GameContainer = (props) => {
   useEffect(() => {
-    if (props.isGameOver) props.endGame();
+    if (props.isGameOver) setTimeout(props.endGame, 2000);
   }, [props.isGameOver]);
 
   return (
