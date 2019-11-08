@@ -1,9 +1,7 @@
 const bcrypt = require('bcryptjs');
 const uuidv4 = require('uuid/v4');
-const cookieParser = require('cookie-parser');
+const fetch = require('node-fetch');
 const pool = require('../models/databaseModel');
-
-
 
 const createUser = (req, res, next) => {
     const { username, password, email } = req.body;
@@ -63,7 +61,7 @@ const setCookie = (req, res, next) => {
     if(res.locals.userData) {
         res.locals.sessionId = uuidv4();
         console.log('Middleware setCookie res.locals.sessionId ', res.locals.sessionId);
-        res.cookie('ssid', res.locals.sessionId, { httpOnly: true, expires: new Date(Date.now() + 90000) });
+        res.cookie('ssid', res.locals.sessionId, { httpOnly: true, expires: new Date(Date.now() + 259200000) });
     }
     return next();
 };
@@ -83,7 +81,6 @@ const setSession = (req, res, next) => {
         if (error) {
             return next({log: `Error inserting new Session data ${error}`, message: `Error creating session`});
         }
-        console.log("Insert session table no error");
         return next();
     });
 };
@@ -92,8 +89,6 @@ const setSession = (req, res, next) => {
 // verify a session middleware
 const verifySession = (req, res, next) => {
     const userCookiesFromBrowser = req.cookies["ssid"];
-
-    console.log("Middleware verifySession req.cookies", userCookiesFromBrowser);
 
     if (userCookiesFromBrowser === undefined || userCookiesFromBrowser === null) {
         res.locals.verifyUser = false;
@@ -138,9 +133,54 @@ const deleteSession = (req, res, next) => {
         if(error) {
             return next({log: `Error in deleting session, ${error}`, message: `Error logging out`})
         }
-        console.log('in deleteSession middleware', dbResponse);
         return next();
     })
+}
+
+const handleOAuth2 = async function (req, res, next) {
+    const tokenResponse = await fetch(
+        `https://www.googleapis.com/oauth2/v4/token`,
+        {
+            method: 'POST',
+            body: JSON.stringify({
+                code: req.query.code,
+                client_id: process.env.OAUTH_CLIENT_ID,
+                client_secret: process.env.OAUTH_CLIENT_SECRET,
+                redirect_uri: 'http://localhost:3000/oauthcallback',
+                grant_type: 'authorization_code'
+            })
+        }
+    )
+    const tokenJson = await tokenResponse.json()
+    const userInfo = await getUserInfo(tokenJson.access_token)
+    
+    // add session entry with user info
+    const queryText = `INSERT INTO "Users" (username, email, password) VALUES ($1, $2, $3) RETURNING *`;
+    const { name, email } = userInfo;
+    console.log('in handleOAuth function.......', name, email)
+    pool.query(queryText, [name, email, 'oauth-user'], (err, dbResponse) => {
+        if(err) {
+            return next({log: `Unable to add new oauth user, ${err}`, message: `Error registering user`});
+        }
+        const { id, username, email } = dbResponse.rows[0];
+        res.locals.userData = { id, username, email };
+        return next();
+    })
+    // res.redirect(`http://localhost:3000?${Object.keys(userInfo).map(key => `${key}=${encodeURIComponent(userInfo[key])}`).join('&')}`)
+    // handle case when client refuses / fails
+}
+
+const getUserInfo = async function(accessToken) {
+    const response = await fetch(
+        `https://www.googleapis.com/oauth2/v1/userinfo?access_token=${accessToken}`,
+        {
+            headers: {
+                Authorization: `Bearer ${accessToken}`
+            }
+        }
+    )
+    const json = await response.json()
+    return json
 }
 
 
@@ -150,6 +190,7 @@ module.exports = {
     setCookie,
     setSession,
     verifySession,
-    deleteSession
+    deleteSession,
+    handleOAuth2
     // sessionCheck
 };

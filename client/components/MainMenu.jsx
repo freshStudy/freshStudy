@@ -1,17 +1,19 @@
 import React, { useState } from 'react';
 import Login from './Login';
 import Signup from './Signup';
+import Oauth from './Oauth';
 import NewGamePrompt from './NewGamePrompt';
 import Particles from 'react-particles-js';
-
+import StatsContainer from '../containers/StatsContainer';
 
 export default ({
   startNewGame,
   user,
   isLoggedIn,
-  isLoading,
   login,
   register,
+  isPaused,
+  resume,
 }) => {
   const [viewToggle, setViewToggle] = useState(true);
   const handleToggle = () => setViewToggle(status => !status);
@@ -21,7 +23,7 @@ export default ({
         params={{
           "particles": {
             "number": {
-              "value": 100,
+              "value": 180,
               "density": {
                 "enable": true
               }
@@ -58,19 +60,31 @@ export default ({
         <NewGamePrompt
           startNewGame={startNewGame}
           isLoggedIn={isLoggedIn}
+          resume={resume}
+          isPaused={isPaused}
         />
-        <div>
+        <div className="main-menu-forms-containers">
           {!isLoggedIn && (viewToggle
-            ? <Login
-                login={login}
-                handleToggle={handleToggle}
-              />
-            : <Signup
-                register={register}
-                handleToggle={handleToggle}
-              />
+            ? <>
+                <Login
+                  login={login}
+                  handleToggle={handleToggle}/>
+              </>
+            : <>
+                <div className="login-user-form">
+                <Signup
+                  register={register}
+                  handleToggle={handleToggle} />
+                <Oauth />
+                </div>
+              </>
           )}
-          {isLoggedIn && `Welcome ${user.username}!`}
+          <div className="welcome">
+            {isLoggedIn && `Welcome ${user.username}!`}
+          </div>
+          <div className="stats-container">
+            <StatsContainer />
+        </div>
         </div>
       </div>
     </div>

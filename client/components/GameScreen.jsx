@@ -1,19 +1,19 @@
 import React from 'react';
 import Card from './Card';
 import NewGamePrompt from './NewGamePrompt';
-import Particles from 'react-particles-js';
-
 
 export default ({
   activeCardIndex,
   cards,
   isGameOver,
-  numCorrectAnswers,
   attemptAnswer,
   startNewGame,
-  user,
   isLoggedIn,
+  answerHistory,
 }) => {
+  const numCorrectAnswers = answerHistory.reduce((acc, cur) => {
+    return acc + cur
+  }, 0);
   let wrongAnswers;
   if (!isGameOver) {
     wrongAnswers = [cards[activeCardIndex].ans_one];
@@ -24,70 +24,23 @@ export default ({
   }
 
   return (
-    <div>
-      <Particles
-        className="gameScreen"
+    <div className="gamePage">
 
-        params={{
-          "particles": {
-            "number": {
-              "value": 60,
-              "density": {
-                "enable": true,
-                "value_area": 1500
-              }
-            },
-            "line_linked": {
-              "enable": true,
-              "opacity": 0.02
-            },
-            "move": {
-              "direction": "right",
-              "speed": 0.05
-            },
-            "size": {
-              "value": 1
-            },
-            "opacity": {
-              "anim": {
-                "enable": true,
-                "speed": 1,
-                "opacity_min": 0.05
-              }
-            }
-          },
-          "interactivity": {
-            "events": {
-              "onclick": {
-                "enable": true,
-                "mode": "push"
-              }
-            },
-            "modes": {
-              "push": {
-                "particles_nb": 1
-              }
-            }
-          },
-          "retina_detect": true
-        }} />
-    <div className="isGameOver">
-      {isLoggedIn ? user.username : 'Guest'}
       {(isGameOver
         ? (<>
             <p>Game over!</p>
-            <NewGamePrompt startNewGame={startNewGame} isLoggedIn={isLoggedIn}/>
+            <NewGamePrompt startNewGame={startNewGame} isLoggedIn={isLoggedIn} />
           </>)
-        : <Card
+          : <Card
             key={cards[activeCardIndex].id}
             question={cards[activeCardIndex].question}
             correctAns={cards[activeCardIndex].ans_correct}
             wrongAnswers={wrongAnswers}
             attemptAnswer={attemptAnswer}
+            answerHistory={answerHistory}
           />
         )}
-        <p>You have answered {numCorrectAnswers} questions correctly.</p>
-      </div>
+      <p className="gamescreen-score-text">You have answered {numCorrectAnswers} {numCorrectAnswers === 1 ? 'question' : 'questions'} correctly.</p>
     </div>
   );
 };

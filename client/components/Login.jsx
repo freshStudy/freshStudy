@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 
+
 export default ({
   login,
   handleToggle,
@@ -11,17 +12,22 @@ export default ({
     if (username && password) login(username, password);
   };
   return (
-    <div>
-      <form className="login-form" onSubmit={handleSubmit}>
-        <label className="userNameLabel">Username:
-          <input className="loginUserName" type="text" value={username} onChange={(e) => setUsername(e.target.value)} required />
-        </label>
-        <label className="passwordLabel">Password:
-          <input className="loginPassword" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
-        </label>
-        <input type="submit" value="Login" />
-      </form>
-      <button className="createAccountBtn" type="button" onClick={handleToggle}>Create Account Here!</button>
-    </div>
+    <>
+      <div>
+        <form onSubmit={handleSubmit}>
+          <label>Username</label>
+          <input type="text" value={username} onChange={(e) => setUsername(e.target.value)} required />
+          <label>Password</label>
+          <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+          <button type="submit">Login</button>
+        </form>
+      </div>
+      <div style={{ marginTop: '40px',
+                    width: '100%',
+                    textAlign: 'center'
+                    }}>Don't have an account?
+        <button type="button" onClick={handleToggle}>Create Account Here!</button>
+      </div>
+      </>
   );
 };
