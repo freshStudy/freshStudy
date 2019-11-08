@@ -29,7 +29,15 @@ const queryString = `
     "user_id" integer NOT NULL,
     CONSTRAINT "Sessions_pk" PRIMARY KEY ("id")
   );
-  `
+  CREATE TABLE IF NOT EXISTS "History" (
+    "id" serial NOT NULL,
+    "user_id" integer NOT NULL,
+    "num_questions" integer NOT NULL,
+    "num_correct" integer NOT NULL,
+    CONSTRAINT "History_pk" PRIMARY KEY ("id")
+    );
+    `
+  // ALTER TABLE "History" ADD CONSTRAINT "History_fk0" FOREIGN KEY ("user_id") REFERENCES "Users"("id");
   // ALTER TABLE "Sessions" ADD CONSTRAINT "Sessions_fk0" FOREIGN KEY ("user_id") REFERENCES "Users"("id");
 
 pool.query(queryString)
