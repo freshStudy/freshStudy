@@ -23,8 +23,8 @@ const StatsContainer = ({
   }, []);
   return (
     <div id="stats">
-      {/* <Leaderboard allHistory={allHistory} /> */}
       <LiveFeed feed={feed}/>
+      <Leaderboard allHistory={allHistory} />
     </div>
   );
 };
