@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import * as actions from '../actions/gameActions';
 import GameScreen from '../components/GameScreen';
@@ -8,15 +8,21 @@ const mapStateToProps = ({ game }) => ({
   answerHistory: game.answerHistory,
   cards: game.cards,
   isGameOver: game.isGameOver,
-  numCorrectAnswers: game.numCorrectAnswers,
 });
 
 const mapDispatchToProps = dispatch => ({
   attemptAnswer: (correct) => dispatch(actions.attemptAnswer(correct)),
+  endGame: () => dispatch(actions.endGame()),
 });
 
-const GameContainer = (props) => (
-  <GameScreen {...props} />
-);
+const GameContainer = (props) => {
+  useEffect(() => {
+    if (props.isGameOver) props.endGame();
+  }, [props.isGameOver]);
+
+  return (
+    <GameScreen {...props} />
+  );
+}
 
 export default connect(mapStateToProps, mapDispatchToProps)(GameContainer);

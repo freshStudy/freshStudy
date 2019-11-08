@@ -4,6 +4,7 @@ import Signup from './Signup';
 import Oauth from './Oauth';
 import NewGamePrompt from './NewGamePrompt';
 import Particles from 'react-particles-js';
+import StatsContainer from '../containers/StatsContainer';
 
 export default ({
   startNewGame,
@@ -83,6 +84,7 @@ export default ({
           )}
           <div className="welcome">
             {isLoggedIn && `Welcome ${user.username}!`}
+            <StatsContainer />
           </div>
         </div>
       </div>

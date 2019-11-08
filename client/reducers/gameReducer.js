@@ -7,19 +7,31 @@ const initialState = {
   activeCardIndex: 0,
   answerHistory: [],
   cards: [],
+  allHistory: [],
 };
 
 export default (state = initialState, action) => {
   switch (action.type) {
     case types.START_NEW_GAME:
       return {
+        ...state,
         isPlaying: true,
         isPaused: false,
         activeCardIndex: 0,
-        numCorrectAnswers: 0,
         answerHistory: [],
         cards: action.payload,
       };
+    case types.END_GAME:
+      const newHistory = action.payload || state.allHistory;
+      return {
+        isGameOver: true,
+        isPlaying: false,
+        isPaused: false,
+        activeCardIndex: 0,
+        answerHistory: [],
+        cards: [],
+        allHistory: newHistory,
+      }
     case types.PAUSE_GAME:
       return {
         ...state,
@@ -36,7 +48,6 @@ export default (state = initialState, action) => {
       const newState = { ...state };
       newState.activeCardIndex += 1;
       if (newState.activeCardIndex >= newState.cards.length) newState.isGameOver = true;
-      if (action.payload === true) newState.numCorrectAnswers += 1;
       newState.answerHistory.push(action.payload);
       return newState;
     case types.RETURN_TO_MAIN_MENU:
@@ -44,6 +55,12 @@ export default (state = initialState, action) => {
         ...state,
         isPlaying: false,
       }
+    case types.UPDATE_HISTORY:
+      console.log('here');
+      return {
+        ...state,
+        allHistory: action.payload,
+      };
     default:
       return state;
   }

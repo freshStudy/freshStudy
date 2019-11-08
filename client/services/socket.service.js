@@ -1,4 +1,5 @@
 import io from 'socket.io-client';
+import * as actions from '../actions';
 
 const socket = io('ws://localhost:3000',
   { transports: ['websocket'] }
