@@ -62,23 +62,20 @@ export default ({
           resume={resume}
           isPaused={isPaused}
         />
-        <div>
+        <div className="main-menu-forms-containers">
           {!isLoggedIn && (viewToggle
             ? <>
                 <Login
                   login={login}
-                  handleToggle={handleToggle}
-                />
-                <Oauth
-                />
+                  handleToggle={handleToggle}/>
               </>
             : <>
+                <div className="login-user-form">
                 <Signup
                   register={register}
-                  handleToggle={handleToggle}
-                />
-                <Oauth
-                />
+                  handleToggle={handleToggle} />
+                <Oauth />
+                </div>
               </>
           )}
           <div className="welcome">
