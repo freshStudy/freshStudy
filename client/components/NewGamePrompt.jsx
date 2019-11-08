@@ -7,11 +7,13 @@ export default ({ startNewGame, isLoggedIn, isPaused, resume }) => {
   };
 
   return (
+    <div className="play-as-guest-button-container">
     <button type="button" className="playAsGuestNavBar" onClick={handleClick}>
       {isLoggedIn
         ? 'Start new game?'
         : 'Play as guest?'
       }
     </button>
+    </div>
   );
 };

@@ -15,12 +15,10 @@ export default ({
     <>
       <div>
         <form onSubmit={handleSubmit}>
-          <label>Username
+          <label>Username</label>
           <input type="text" value={username} onChange={(e) => setUsername(e.target.value)} required />
-          </label>
-          <label>Password
+          <label>Password</label>
           <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
-          </label>
           <button type="submit">Login</button>
         </form>
       </div>
