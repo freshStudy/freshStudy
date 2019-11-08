@@ -11,7 +11,9 @@ export default ({
   isLoggedIn,
   answerHistory,
 }) => {
-  const numCorrectAnswers = answerHistory.reduce((acc, cur) => acc + cur);
+  const numCorrectAnswers = answerHistory.reduce((acc, cur) => {
+    return acc + cur
+  }, 0);
   let wrongAnswers;
   if (!isGameOver) {
     wrongAnswers = [cards[activeCardIndex].ans_one];

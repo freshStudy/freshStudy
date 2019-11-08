@@ -27,6 +27,9 @@ export const endGame = () => (dispatch, getState) => {
       numQs: state.game.answerHistory.length,
       numCorrect: state.game.answerHistory.reduce((acc, cur) => acc + cur),
     }),
+    headers: {
+      'Content-Type': 'application/json',
+    },
   };
   fetch('/results', options)
     .then(res => res.json())

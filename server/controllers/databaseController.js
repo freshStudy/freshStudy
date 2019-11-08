@@ -14,8 +14,9 @@ module.exports = {
   },
   insertResults(req, res, next) {
     const queryText = `INSERT INTO "History" (user_id, num_questions, num_correct) VALUES ($1, $2, $3)`;
-    const { id, numQs, numCorrect } = req.body;
-    pool.query(queryText,[id, numQs, numCorrect], (err, dbResponse) => {
+    let { id, numQs, numCorrect } = req.body;
+    console.dir(req.body);
+    pool.query(queryText, [+id, +numQs, +numCorrect], (err, dbResponse) => {
       if(err) {
         return next({log: `Error adding result to history, ${err}`, message: `Server could not record results`})
       }
